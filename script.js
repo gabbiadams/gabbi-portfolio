@@ -86,7 +86,9 @@ lightbox.setAttribute("aria-label", "Expanded project image");
 lightbox.innerHTML = `
   <div class="lightbox-content">
     <button class="lightbox-close" type="button" aria-label="Close image viewer">&times;</button>
+    <button class="lightbox-nav lightbox-previous" type="button" aria-label="Previous image">&larr;</button>
     <img class="lightbox-image" alt="">
+    <button class="lightbox-nav lightbox-next" type="button" aria-label="Next image">&rarr;</button>
     <p class="lightbox-caption"></p>
   </div>
 `;
@@ -95,14 +97,32 @@ document.body.append(lightbox);
 const lightboxImage = lightbox.querySelector(".lightbox-image");
 const lightboxCaption = lightbox.querySelector(".lightbox-caption");
 const lightboxClose = lightbox.querySelector(".lightbox-close");
+const lightboxPrevious = lightbox.querySelector(".lightbox-previous");
+const lightboxNext = lightbox.querySelector(".lightbox-next");
+
+let lightboxImages = [];
+let lightboxIndex = 0;
+
+function showLightboxImage(index) {
+  if (!lightboxImages.length) return;
+
+  lightboxIndex = (index + lightboxImages.length) % lightboxImages.length;
+  const imageLink = lightboxImages[lightboxIndex];
+  const thumbnail = imageLink.querySelector("img");
+  const description = thumbnail?.alt || "Expanded project image";
+
+  lightboxImage.src = imageLink.href;
+  lightboxImage.alt = description;
+  lightboxCaption.textContent = `${description} (${lightboxIndex + 1} of ${lightboxImages.length})`;
+  lightboxPrevious.hidden = lightboxImages.length < 2;
+  lightboxNext.hidden = lightboxImages.length < 2;
+}
 
 document.querySelectorAll(".screenshots > a").forEach((imageLink) => {
   imageLink.addEventListener("click", (event) => {
     event.preventDefault();
-    const thumbnail = imageLink.querySelector("img");
-    lightboxImage.src = imageLink.href;
-    lightboxImage.alt = thumbnail?.alt || "Expanded project image";
-    lightboxCaption.textContent = thumbnail?.alt || "";
+    lightboxImages = [...imageLink.closest(".screenshots").querySelectorAll(":scope > a")];
+    showLightboxImage(lightboxImages.indexOf(imageLink));
     lightbox.showModal();
   });
 });
@@ -112,9 +132,22 @@ function closeLightbox() {
 }
 
 lightboxClose.addEventListener("click", closeLightbox);
+lightboxPrevious.addEventListener("click", () => showLightboxImage(lightboxIndex - 1));
+lightboxNext.addEventListener("click", () => showLightboxImage(lightboxIndex + 1));
 lightbox.addEventListener("click", (event) => {
   if (event.target === lightbox) closeLightbox();
 });
+lightbox.addEventListener("keydown", (event) => {
+  if (event.key === "ArrowLeft") {
+    event.preventDefault();
+    showLightboxImage(lightboxIndex - 1);
+  }
+  if (event.key === "ArrowRight") {
+    event.preventDefault();
+    showLightboxImage(lightboxIndex + 1);
+  }
+});
 lightbox.addEventListener("close", () => {
   lightboxImage.removeAttribute("src");
+  lightboxImages = [];
 });

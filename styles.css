@@ -33,7 +33,11 @@ article { padding: 25px 0 35px; border-bottom: 1px solid #444; }
 .lightbox-caption { max-width: 900px; margin: 10px 50px 0; color: #ddd; text-align: center; font-size: 14px; }
 .lightbox-close { position: fixed; z-index: 1; top: 18px; right: 22px; display: grid; place-items: center; width: 46px; height: 46px; padding: 0; border: 1px solid #aaa; border-radius: 50%; background: #181818; color: #fff; font: inherit; font-size: 32px; line-height: 1; cursor: pointer; pointer-events: auto; }
 .lightbox-close:hover { background: #333; border-color: #fff; }
-.lightbox-close:focus-visible { outline: 2px solid #b8d4ed; outline-offset: 3px; }
+.lightbox-nav { position: fixed; z-index: 1; top: 50%; display: grid; place-items: center; width: 48px; height: 48px; padding: 0; transform: translateY(-50%); border: 1px solid #aaa; border-radius: 50%; background: #181818; color: #fff; font: inherit; font-size: 27px; line-height: 1; cursor: pointer; pointer-events: auto; }
+.lightbox-previous { left: 22px; }
+.lightbox-next { right: 22px; }
+.lightbox-nav:hover { background: #333; border-color: #fff; }
+.lightbox-close:focus-visible, .lightbox-nav:focus-visible { outline: 2px solid #b8d4ed; outline-offset: 3px; }
 body:has(.lightbox[open]) { overflow: hidden; }
 #about { padding: 25px 0; }
 footer { padding: 20px 0 30px; border-top: 1px solid #444; font-size: 14px; }
@@ -47,4 +51,8 @@ footer { padding: 20px 0 30px; border-top: 1px solid #444; font-size: 14px; }
   .lightbox { padding: 14px; }
   .lightbox-image { max-height: calc(100vh - 85px); }
   .lightbox-close { top: 10px; right: 10px; }
+  .lightbox-nav { top: auto; bottom: 18px; transform: none; }
+  .lightbox-previous { left: calc(50% - 62px); }
+  .lightbox-next { right: calc(50% - 62px); }
+  .lightbox-caption { margin-bottom: 62px; }
 }
